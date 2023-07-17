@@ -9,8 +9,7 @@ import com.example.service.IUserInfoService;
 import com.example.service.IUserService;
 import com.example.utils.UserHolder;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * @author
  * @since 2021-12-22
  */
-@Tag(name = "用户数据处理",description = "描述")
+@Tag(name = "用户信息相关接口")
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -42,6 +41,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/code")
+    @Operation(summary = "用户发送验证码")
     public Result sendCode(@RequestParam("phone") String phone) {
         // TODO 发送短信验证码并保存验证码
         return userService.sendCode(phone);
@@ -51,8 +51,8 @@ public class UserController {
      * 登录功能(弃用session，改用Redis存储已登录用户信息)
      * @param loginForm 登录参数，包含手机号、验证码；或者手机号、密码
      */
-    @Operation(summary = "用户登录")
     @PostMapping("/login")
+    @Operation(summary = "用户登录")
     public Result login(@RequestBody LoginFormDTO loginForm){
         // 实现登录功能
         return userService.login(loginForm);
@@ -69,10 +69,11 @@ public class UserController {
     }
 
     /**
-     *
+     * 用户权限校验
      * @return
      */
     @GetMapping("/me")
+    @Operation(summary = "用户权限校验")
     public Result me(){
         // 获取当前登录的用户并返回,从ThreadLocal中取出用户信息
         UserDTO user = UserHolder.getUser();

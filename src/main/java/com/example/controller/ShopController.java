@@ -1,26 +1,19 @@
 package com.example.controller;
 
-
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.dto.Result;
 import com.example.entity.Shop;
 import com.example.service.IShopService;
 import com.example.utils.SystemConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
-/**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @RestController
 @RequestMapping("/shop")
+@Tag(name = "商铺信息相关接口")
 public class ShopController {
 
     @Autowired
@@ -32,6 +25,7 @@ public class ShopController {
      * @return 商铺详情数据
      */
     @GetMapping("/{id}")
+    @Operation(summary = "根据id查询商铺信息")
     public Result queryShopById(@PathVariable("id") Long id) {
         return shopService.queryShopById(id);
     }
@@ -42,6 +36,7 @@ public class ShopController {
      * @return 商铺id
      */
     @PostMapping
+    @Operation(summary = "新增商铺信息")
     public Result saveShop(@RequestBody Shop shop) {
         // 写入数据库
         shopService.save(shop);
@@ -55,6 +50,7 @@ public class ShopController {
      * @return 无
      */
     @PutMapping
+    @Operation(summary = "更新商铺信息")
     public Result updateShop(@RequestBody Shop shop) {
         // 写入数据库
         return shopService.update(shop);
@@ -67,6 +63,7 @@ public class ShopController {
      * @return 商铺列表
      */
     @GetMapping("/of/type")
+    @Operation(summary = "根据商铺类型分页查询商铺信息")
     public Result queryShopByType(
             @RequestParam("typeId") Integer typeId,
             @RequestParam(value = "current", defaultValue = "1") Integer current
@@ -86,6 +83,7 @@ public class ShopController {
      * @return 商铺列表
      */
     @GetMapping("/of/name")
+    @Operation(summary = "根据商铺名称关键字分页查询商铺信息")
     public Result queryShopByName(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "current", defaultValue = "1") Integer current

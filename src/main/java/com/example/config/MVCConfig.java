@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 拦截器配置类
  */
 @Configuration
-public class MVConfig implements WebMvcConfigurer {
+public class MVCConfig implements WebMvcConfigurer {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
