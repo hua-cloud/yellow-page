@@ -13,14 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @Service
 public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher> implements IVoucherService {
 
@@ -35,7 +27,13 @@ public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher> impl
         return Result.ok(vouchers);
     }
 
+    /**
+     * 添加秒杀优惠券
+     * @param voucher
+     */
     @Override
+    // @Transactional注解，可以指定该方法或类在执行时需要开启事务，若方法全部执行成功则commit
+    // 反之回滚
     @Transactional
     public void addSeckillVoucher(Voucher voucher) {
         // 保存优惠券

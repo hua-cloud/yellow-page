@@ -36,13 +36,13 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     @Override
     public Result queryShopById(Long id) {
         // 解决缓存穿透的方法
-        // Shop shop = queryWithPassThrough(id);
+        Shop shop = queryWithPassThrough(id);
 
         // 利用互斥锁解决缓存击穿问题
         // Shop shop = queryWithMutex(id);
 
         // 逻辑过期方案解决缓存击穿问题
-        Shop shop = queryWithLogicalExpire(id);
+        // Shop shop = queryWithLogicalExpire(id);
 
         if (shop == null) {
             return Result.fail("店铺信息不存在");
