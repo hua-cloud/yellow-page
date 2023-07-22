@@ -15,18 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author
- * @since 2021-12-22
- */
-@Tag(name = "用户信息相关接口")
 @Slf4j
 @RestController
 @RequestMapping("/user")
+@Tag(name = "用户信息相关接口")
 public class UserController {
 
     @Autowired
