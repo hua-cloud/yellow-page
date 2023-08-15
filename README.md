@@ -37,4 +37,5 @@
 | MyBatis plus | ORM框架    | https://github.com/baomidou/mybatis-plus  |
 | Redis        | 缓存数据库    | https://redis.io/                         |
 | Lombok       | 简化对象封装工具 | https://github.com/rzwitserloot/lombok    |
+| HuTool       | 开发工具包    | https://hutool.cn/                        |
 | Swagger3     | 接口文档生成工具 | https://github.com/swagger-api/swagger-ui |            
