@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.example.config.RabbitMQConfig;
 import com.example.dto.Result;
 import com.example.entity.VoucherOrder;
 import com.example.mapper.VoucherOrderMapper;
@@ -11,6 +12,7 @@ import com.example.utils.UserHolder;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -36,6 +38,9 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+
     // @Resource
     // private RedissonClient redissonClient;
 
@@ -47,7 +52,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     }
 
     // 定义一个阻塞队列，用来存放订单信息，所有的线程都会添加订单信息到这同一个阻塞队列中
-    private BlockingQueue<VoucherOrder> orderTasks = new ArrayBlockingQueue<>(1024*1024);
+    // private BlockingQueue<VoucherOrder> orderTasks = new ArrayBlockingQueue<>(1024*1024);
     // 定义一个只包含一个线程的线程池(单线程执行器)，用其完成异步下单的操作
     private static final ExecutorService SECKILL_ORDER_EXECUTOR = Executors.newSingleThreadExecutor();
 
@@ -68,9 +73,15 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             while (true){
                 try {
                     // 1.获取队列中的订单信息
-                    VoucherOrder voucherOrder = orderTasks.take();
-                    // 2.创建订单
-                    createVoucherOrder(voucherOrder);
+                    // VoucherOrder voucherOrder = orderTasks.take();
+                    VoucherOrder voucherOrder= (VoucherOrder) rabbitTemplate.receiveAndConvert(RabbitMQConfig.QUEUE_NAME);
+                    if (voucherOrder != null) {
+                        // 2.创建订单
+                        createVoucherOrder(voucherOrder);
+                    } else {
+                        // 当消息队列为空时，将当前线程暂时休眠
+                        Thread.sleep(1000);
+                    }
                 } catch (InterruptedException e) {
                     log.error("进行异步下单时出现异常", e);
                 }
@@ -110,7 +121,9 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         // 2.5.优惠券id
         voucherOrder.setVoucherId(voucherId);
         // 2.6.放入到阻塞队列中
-        orderTasks.add(voucherOrder);
+        // orderTasks.add(voucherOrder);
+        // 2.6.更换为使用RabbitMQ来实现，此处即向消息队列中添加当前订单消息
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME,"work", voucherOrder);
 
         return Result.ok(orderId);
     }
