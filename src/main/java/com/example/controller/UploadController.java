@@ -4,6 +4,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.example.dto.Result;
 import com.example.utils.SystemConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,10 +16,12 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("upload")
+@RequestMapping("/upload")
+@Tag(name = "文件上传相关接口")
 public class UploadController {
 
-    @PostMapping("blog")
+    @PostMapping("/blog")
+    @Operation(summary = "上传博客图片")
     public Result uploadImage(@RequestParam("file") MultipartFile image) {
         try {
             // 获取原始文件名称

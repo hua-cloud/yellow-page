@@ -1,6 +1,5 @@
 package com.example.controller;
 
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.dto.Result;
 import com.example.dto.UserDTO;
@@ -10,27 +9,20 @@ import com.example.service.IBlogService;
 import com.example.service.IUserService;
 import com.example.utils.SystemConstants;
 import com.example.utils.UserHolder;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @RestController
 @RequestMapping("/blog")
+@Tag(name = "博客相关接口")
 public class BlogController {
 
     @Autowired
     private IBlogService blogService;
-    @Autowired
-    private IUserService userService;
 
     @PostMapping
     public Result saveBlog(@RequestBody Blog blog) {
@@ -64,20 +56,14 @@ public class BlogController {
     }
 
     @GetMapping("/hot")
+    @Operation(summary = "获取热门博客")
     public Result queryHotBlog(@RequestParam(value = "current", defaultValue = "1") Integer current) {
-        // 根据用户查询
-        Page<Blog> page = blogService.query()
-                .orderByDesc("liked")
-                .page(new Page<>(current, SystemConstants.MAX_PAGE_SIZE));
-        // 获取当前页数据
-        List<Blog> records = page.getRecords();
-        // 查询用户
-        records.forEach(blog ->{
-            Long userId = blog.getUserId();
-            User user = userService.getById(userId);
-            blog.setName(user.getNickName());
-            blog.setIcon(user.getIcon());
-        });
-        return Result.ok(records);
+        return blogService.queryHotBlog(current);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "根据博客id获取到对应的博客")
+    public Result queryBlogById(@PathVariable Long id) {
+        return blogService.queryBlogById(id);
     }
 }
