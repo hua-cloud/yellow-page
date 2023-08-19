@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.dto.Result;
 import com.example.dto.UserDTO;
 import com.example.entity.Blog;
-import com.example.entity.User;
 import com.example.service.IBlogService;
-import com.example.service.IUserService;
 import com.example.utils.SystemConstants;
 import com.example.utils.UserHolder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,11 +34,11 @@ public class BlogController {
     }
 
     @PutMapping("/like/{id}")
+    @Operation(summary = "给指定id的博客点赞")
     public Result likeBlog(@PathVariable("id") Long id) {
-        // 修改点赞数量
-        blogService.update()
-                .setSql("liked = liked + 1").eq("id", id).update();
-        return Result.ok();
+        // 修改点赞数量  SQL: update tb_blog set liked = liked + 1 where id = id
+        // blogService.update().setSql("liked = liked + 1").eq("id", id).update();
+        return blogService.likeBlog(id);
     }
 
     @GetMapping("/of/me")

@@ -11,14 +11,6 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
@@ -55,7 +47,6 @@ public class Blog implements Serializable {
      */
     @TableField(exist = false)
     private Boolean isLike;
-
     /**
      * 标题
      */
